@@ -8,14 +8,6 @@ struct ContentView: View {
   @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
   @State private var selectedSidebarItem: SidebarItem? = .chat
 
-  var useSplitView: Bool {
-    #if os(macOS)
-      return true
-    #else
-      return UIDevice.current.userInterfaceIdiom == .pad
-    #endif
-  }
-
   var body: some View {
     NavigationSplitView(columnVisibility: $columnVisibility) {
       PlatformSidebar(
@@ -35,11 +27,8 @@ struct ContentView: View {
         }
       case .manifesto:
         ManifestoView()
-      case .models:
-        // Assuming there's a ModelManagerView or similar based on history
-        Text("Models View")  // Placeholder if I can't find it
       case .settings:
-        Text("Settings View")  // Placeholder
+        Text("Settings View")
       case .none:
         Text("Select an item")
       }
@@ -52,10 +41,8 @@ struct ContentView: View {
   }
 }
 
-// SidebarItem definition
 enum SidebarItem: String, Identifiable, CaseIterable {
   case chat
-  case models
   case conversations
   case manifesto
   case settings
@@ -65,7 +52,6 @@ enum SidebarItem: String, Identifiable, CaseIterable {
   var title: String {
     switch self {
     case .chat: return "Council"
-    case .models: return "Members"
     case .conversations: return "History"
     case .manifesto: return "Manifesto"
     case .settings: return "Settings"
@@ -75,7 +61,6 @@ enum SidebarItem: String, Identifiable, CaseIterable {
   var icon: String {
     switch self {
     case .chat: return "building.columns"
-    case .models: return "person.3"
     case .conversations: return "clock"
     case .manifesto: return "quote.bubble"
     case .settings: return "gearshape"
@@ -83,7 +68,7 @@ enum SidebarItem: String, Identifiable, CaseIterable {
   }
 
   static var mainItems: [SidebarItem] {
-    [.chat, .models, .conversations, .manifesto]
+    [.chat, .conversations, .manifesto]
   }
 
   static var settingsItem: SidebarItem {

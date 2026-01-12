@@ -33,23 +33,9 @@ struct ChatView: View {
       ChatInputView(
         text: $vm.inputText,
         isSending: vm.isSending,
-        onSend: { await vm.send() },
+        onSend: { Task { await vm.send() } },
         onStop: { Task { await vm.stop() } },
-        isFocused: $isInputFocused,
-        supportsReasoning: false,
-        reasoningMode: $vm.reasoningMode,
-        conversationLanguage: .english,
-        isVoiceRecording: false,
-        isVoiceAvailable: false,
-        isWhisperDownloading: false,
-        whisperDownloadProgress: 0,
-        isWhisperLoading: false,
-        whisperLoadingProgress: 0,
-        voiceAudioLevel: 0,
-        onVoiceTap: {},
-        onVoiceCancel: {},
-        onTranscriptionStop: nil,
-        onAddDocument: {}
+        isFocused: $isInputFocused
       )
       .padding(.horizontal)
       .padding(.bottom)
@@ -69,7 +55,7 @@ struct ChatView: View {
 // Stub for ToastCenter if not copied
 @Observable
 class ToastCenter {
-  func show(_ message: String, kind: ToastKind = .info) {}
+  func show(_ message: String, kind: ToastKind = .info, actionTitle: String? = nil) {}
 }
 
 enum ToastKind {

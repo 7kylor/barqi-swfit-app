@@ -35,9 +35,11 @@ final class ChatMessage {
     set { roleRaw = newValue.rawValue }
   }
 
-  // Simplified for now
-  var language: String? {
-    get { languageRaw }
-    set { languageRaw = newValue }
+  var language: DetectedLanguage? {
+    get {
+      guard let raw = languageRaw else { return nil }
+      return DetectedLanguage(rawValue: raw)
+    }
+    set { languageRaw = newValue?.rawValue }
   }
 }

@@ -7,24 +7,15 @@ struct CouncilView: View {
   @State private var vm: ChatViewModel
   @FocusState private var isInputFocused: Bool
 
-  // Voice State
-  @State private var isVoiceRecording = false
-  @State private var voiceAudioLevel: Float = 0
-
-  // RAG State
-  @State private var showingDocumentPicker = false
-
   init(conversation: Conversation) {
     _vm = State(initialValue: ChatViewModel(conversation: conversation))
   }
 
   var body: some View {
     VStack(spacing: 0) {
-      // 1. Chat/Transcript Area
       ScrollViewReader { proxy in
         ScrollView {
           VStack(spacing: 20) {
-            // Disclaimer / Header
             Text("The Council is in session.")
               .font(.caption)
               .foregroundStyle(.secondary)
@@ -36,7 +27,6 @@ struct CouncilView: View {
                 .id(message.id)
             }
 
-            // Spacer for bottom input
             Color.clear.frame(height: 100)
           }
           .padding()
@@ -50,42 +40,23 @@ struct CouncilView: View {
         }
       }
 
-      // 2. Deliberation Status (Overlay)
       if let council = app.councilService, council.isDeliberating {
         DeliberationStatusView(activeProviders: council.activeProviders)
           .transition(.move(edge: .bottom).combined(with: .opacity))
           .padding(.bottom, 8)
       }
 
-      // 3. Input Area (Fully Wired)
       ChatInputView(
         text: $vm.inputText,
         isSending: vm.isSending,
-        onSend: { await vm.send() },
+        onSend: { Task { await vm.send() } },
         onStop: { Task { await vm.stop() } },
-        isFocused: $isInputFocused,
-        supportsReasoning: false,
-        reasoningMode: $vm.reasoningMode,
-        conversationLanguage: .english,
-        isVoiceRecording: isVoiceRecording,
-        isVoiceAvailable: true,
-        isWhisperDownloading: false,  // Assume bundled or downloaded for now
-        whisperDownloadProgress: 0,
-        isWhisperLoading: false,
-        whisperLoadingProgress: 0,
-        voiceAudioLevel: voiceAudioLevel,
-        onVoiceTap: { handleVoiceTap() },
-        onVoiceCancel: {
-          isVoiceRecording = false
-          Task { await app.voiceTranscriber.stopStreamingTranscription() }
-        },
-        onTranscriptionStop: nil,
-        onAddDocument: { showingDocumentPicker = true }
+        isFocused: $isInputFocused
       )
       .padding(.horizontal)
       .padding(.bottom)
     }
-    .background(Color(nsColor: .windowBackgroundColor))
+    .background(Color(.systemBackground))
     .navigationTitle("BarQi")
     .onAppear {
       vm.setChatService(app.chatService)
@@ -95,64 +66,27 @@ struct CouncilView: View {
     .onReceive(NotificationCenter.default.publisher(for: .generationComplete)) { _ in
       vm.isSending = false
     }
-    .fileImporter(
-      isPresented: $showingDocumentPicker,
-      allowedContentTypes: DocumentImportService.supportedUTTypes,
-      allowsMultipleSelection: true
-    ) { result in
-      if case .success(let urls) = result {
-        Task { await importDocuments(urls) }
-      }
-    }
-  }
-
-  private func handleVoiceTap() {
-    if isVoiceRecording {
-      // Stop
-      isVoiceRecording = false
-      Task {
-        await app.voiceTranscriber.stopStreamingTranscription()
-        vm.inputText = app.voiceTranscriber.streamingTranscription
-      }
-    } else {
-      // Start
-      isVoiceRecording = true
-      Task {
-        try? await app.voiceTranscriber.startStreamingTranscription()
-        // Setup poller for transcription updates if needed
-        // For now simpler hook
-      }
-    }
-  }
-
-  private func importDocuments(_ urls: [URL]) async {
-    for url in urls {
-      if let doc = try? await app.documentImportService.importDocument(from: url) {
-        try? app.ragService.addDocumentToConversation(doc, conversation: vm.conversation)
-      }
-    }
   }
 }
 
-// Reuse Subviews from previous step
 struct MessageBubble: View {
   let message: ChatMessage
 
   var body: some View {
     HStack(alignment: .bottom, spacing: 12) {
       if message.role == .assistant {
-        Image(systemName: "building.columns.fill")  // Council Icon
+        Image(systemName: "building.columns.fill")
           .font(.system(size: 16))
           .foregroundStyle(.white)
           .frame(width: 32, height: 32)
-          .background(Circle().fill(.blue.gradient))
+          .background(Circle().fill(Color.blue.gradient))
       } else {
         Spacer()
       }
 
       VStack(alignment: message.role == .user ? .trailing : .leading, spacing: 4) {
         if !message.text.isEmpty {
-          Text(LocalizedStringKey(message.text))  // Markdown support
+          Text(message.text)
             .padding(12)
             .background(
               RoundedRectangle(cornerRadius: 16)
@@ -160,8 +94,7 @@ struct MessageBubble: View {
             )
             .foregroundStyle(.primary)
         } else {
-          // Empty state (thinking)
-          ThinkingIndicator()
+          CouncilThinkingIndicator()
         }
       }
 
@@ -190,7 +123,6 @@ struct DeliberationStatusView: View {
         Image(systemName: iconFor(id: id))
           .symbolEffect(.pulse.byLayer)
           .foregroundStyle(.blue)
-          .help(id)
       }
     }
     .padding(12)
@@ -209,7 +141,7 @@ struct DeliberationStatusView: View {
   }
 }
 
-struct ThinkingIndicator: View {
+struct CouncilThinkingIndicator: View {
   @State private var opacity: Double = 0.3
 
   var body: some View {

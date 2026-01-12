@@ -149,9 +149,6 @@ struct AssistantMessageView: View {
           }
 
           Spacer(minLength: 0)
-          
-          // Feedback chip for rating responses
-          FeedbackChip(messageId: message.id)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, Space.xs)
@@ -169,7 +166,8 @@ struct AssistantMessageView: View {
         ActivityView(activityItems: [message.text] as [ActivityItemProviding])
       }
     #endif
-    .animation(reduceMotion ? nil : AnimationUtilities.smooth, value: !isAssistantThinking && !isGenerating)
+    .animation(
+      reduceMotion ? nil : AnimationUtilities.smooth, value: !isAssistantThinking && !isGenerating)
   }
 
   private var isAssistantThinking: Bool {

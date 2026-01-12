@@ -10,12 +10,11 @@ final class AppModel {
   var subscriptionService = SubscriptionService()
   var usageMeter = UsageMeterObject()
   var modelContainer: ModelContainer
-  var engine: InferenceEngine
 
   // Real Services
   var voiceTranscriber = VoiceTranscriptionService()
   var documentImportService: DocumentImportService
-  var documentProcessingService = DocumentProcessingService()
+  var documentProcessingService: DocumentProcessingService
   var ragService: RAGService
   var ttsService = TextToSpeechService()
 
@@ -28,11 +27,17 @@ final class AppModel {
     self.modelContainer = modelContainer
     // Initialize CouncilService
     self.chatService = CouncilService()
-    self.engine = MockEngine()
 
     // Initialize RAG
     self.ragService = RAGService(
       modelContext: modelContainer.mainContext,
+      embeddingService: MockEmbeddingService(),
+      vectorStoreService: MockVectorStoreService()
+    )
+    self.documentProcessingService = DocumentProcessingService(
+      modelContext: modelContainer.mainContext,
+      parserService: MockDocumentParserService(),
+      chunkingService: MockTextChunkingService(),
       embeddingService: MockEmbeddingService(),
       vectorStoreService: MockVectorStoreService()
     )
@@ -46,22 +51,10 @@ final class AppModel {
   }
 
   func autoNameConversation(_ conversation: Conversation) {
-    // In Porting, maybe link this to a real aggregation?
-    // For now, keep simple
     conversation.title = "BarQi Session \(Date().formatted(date: .numeric, time: .shortened))"
   }
 
   func forceReseedModels() {
     // Stub for settings action
   }
-}
-
-protocol InferenceEngine {
-  func isLoaded() -> Bool
-  func loadedModelId() -> String?
-}
-
-class MockEngine: InferenceEngine {
-  func isLoaded() -> Bool { true }
-  func loadedModelId() -> String? { "mock-model" }
 }

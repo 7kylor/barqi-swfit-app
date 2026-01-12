@@ -7,11 +7,44 @@ final class Document {
   var name: String
   var url: URL?
   var createdAt: Date
+  var statusRaw: String = DocumentStatus.imported.rawValue
+  var processedAt: Date?
+  var chunkCount: Int = 0
+  var sizeBytes: Int64 = 0
+  var fileType: String = "pdf"
 
-  init(id: UUID = UUID(), name: String, url: URL? = nil) {
+  var status: DocumentStatus {
+    get { DocumentStatus(rawValue: statusRaw) ?? .imported }
+    set { statusRaw = newValue.rawValue }
+  }
+
+  var filePath: String {
+    url?.path ?? ""
+  }
+
+  init(
+    id: UUID = UUID(),
+    name: String,
+    url: URL? = nil,
+    filePath: String? = nil,
+    fileType: String = "pdf",
+    sizeBytes: Int64 = 0,
+    status: DocumentStatus = .imported,
+    processedAt: Date? = nil,
+    chunkCount: Int = 0
+  ) {
     self.id = id
     self.name = name
-    self.url = url
+    if let filePath = filePath {
+      self.url = URL(fileURLWithPath: filePath)
+    } else {
+      self.url = url
+    }
+    self.fileType = fileType
+    self.sizeBytes = sizeBytes
+    self.statusRaw = status.rawValue
+    self.processedAt = processedAt
+    self.chunkCount = chunkCount
     self.createdAt = Date()
   }
 }
@@ -70,16 +103,22 @@ struct RetrievedChunk: Sendable {
 
 protocol EmbeddingService: Sendable {
   func generateEmbedding(for text: String) async throws -> [Float]
+  func generateEmbeddings(for texts: [String]) async throws -> [[Float]]
 }
 
 protocol VectorStoreService: Sendable {
   func searchSimilar(queryEmbedding: [Float], topK: Int) async throws -> [VectorSearchResult]
+  func storeChunk(_ chunk: DocumentChunk, embedding: [Float]) async throws
 }
 
 final class MockEmbeddingService: EmbeddingService {
   func generateEmbedding(for text: String) async throws -> [Float] { [0.0] }
+  func generateEmbeddings(for texts: [String]) async throws -> [[Float]] {
+    texts.map { _ in [0.0] }
+  }
 }
 
 final class MockVectorStoreService: VectorStoreService {
   func searchSimilar(queryEmbedding: [Float], topK: Int) async throws -> [VectorSearchResult] { [] }
+  func storeChunk(_ chunk: DocumentChunk, embedding: [Float]) async throws {}
 }

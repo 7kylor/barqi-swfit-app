@@ -1,29 +1,63 @@
 import Foundation
 import SwiftData
 
-@Model
-final class Preset {
-  @Attribute(.unique) var id: String
-  var name: String
+enum Preset: String, Codable, CaseIterable, Sendable, Identifiable {
+  var id: String { rawValue }
+  case general = "general"
+  case creative = "creative"
+  case code = "code"
+  case academic = "academic"
+  case professional = "professional"
 
-  init(id: String = UUID().uuidString, name: String) {
-    self.id = id
-    self.name = name
+  var displayName: String {
+    switch self {
+    case .general: return "General"
+    case .creative: return "Creative"
+    case .code: return "Code"
+    case .academic: return "Academic"
+    case .professional: return "Professional"
+    }
+  }
+
+  var icon: String {
+    switch self {
+    case .general: return "sparkles"
+    case .creative: return "paintpalette"
+    case .code: return "chevron.left.forwardslash.chevron.right"
+    case .academic: return "graduationcap"
+    case .professional: return "briefcase"
+    }
   }
 }
 
+enum DocumentStatus: String, Codable, Sendable {
+  case imported = "imported"
+  case processing = "processing"
+  case processed = "processed"
+  case failed = "failed"
+}
+
 protocol DocumentParserService: Sendable {
-  func parse(url: URL) async throws -> String
+  func parseText(from document: Document) throws -> String
 }
 
 protocol TextChunkingService: Sendable {
-  func chunk(text: String) -> [String]
+  func chunkText(_ text: String) -> [String]
+  func createDocumentChunks(for documentId: UUID, from chunks: [String], modelContext: ModelContext)
+    throws -> [DocumentChunk]
+}
+
+struct PS {
+  static let choose_how_to_use = "Choose how to use BarQi"
 }
 
 final class MockDocumentParserService: DocumentParserService {
-  func parse(url: URL) async throws -> String { "" }
+  func parseText(from document: Document) throws -> String { "" }
 }
 
 final class MockTextChunkingService: TextChunkingService {
-  func chunk(text: String) -> [String] { [] }
+  func chunkText(_ text: String) -> [String] { [] }
+  func createDocumentChunks(for documentId: UUID, from chunks: [String], modelContext: ModelContext)
+    throws -> [DocumentChunk]
+  { [] }
 }
