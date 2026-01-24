@@ -61,7 +61,6 @@
 		A8806CA0CCC29BEE04B8E465 /* LanguagePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ECD0D970FF1A826CC925907 /* LanguagePreference.swift */; };
 		AD23E9BB1B77FCA0947F6520 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6324F692BD75A2F1D374C937 /* Formatters.swift */; };
 		AD93941A571B100254A1A8E6 /* GlassComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526EEC494590BFFB4D32BB8D /* GlassComponents.swift */; };
-		B1D3BE5D7F388C6A028E7FD6 /* PresetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95591FC494F5F8FD925F4C /* PresetManager.swift */; };
 		B550AECF6051E712F6FD5E81 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDEFCE37109A9B8C3F9A5ED6 /* ChatViewModel.swift */; };
 		B663D90E0D7360BB179ADECC /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BB601867E70DF53A94A03F /* AppSettings.swift */; };
 		BEA69DFF681D52C89A5AC632 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABDD5C4914C8F78EA075D685 /* ContentView.swift */; };
@@ -123,7 +122,6 @@
 		75211A843D62B14FE65F683B /* WhisperModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperModelManager.swift; sourceTree = "<group>"; };
 		77B38004F1C9D096FDF1948F /* BubbleContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleContainer.swift; sourceTree = "<group>"; };
 		7A431359B555D79EBFC0EF24 /* TextSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSanitizer.swift; sourceTree = "<group>"; };
-		7A95591FC494F5F8FD925F4C /* PresetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetManager.swift; sourceTree = "<group>"; };
 		7BD4DF8959200D091A8566D0 /* AppReviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewManager.swift; sourceTree = "<group>"; };
 		869D08D61DF61BCBCA47A16A /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		894493D268DE0F3AB6B7D6C2 /* AssistantMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantMessageView.swift; sourceTree = "<group>"; };
@@ -323,7 +321,6 @@
 				43C2EED21A86D448CBDFEE1B /* DocumentImportService.swift */,
 				EFB9EA370D448FF86432DCFD /* DocumentProcessingService.swift */,
 				50B3A81BB1FC66A6D2EA850B /* LocalizationManager.swift */,
-				7A95591FC494F5F8FD925F4C /* PresetManager.swift */,
 				12318F13D9B471636A778D2E /* RAGService.swift */,
 				C7F781F69EA2A41B8933CBEF /* SignInWithAppleService.swift */,
 				0F2AF7E2B8CFE235CC0D1990 /* StreamingAudioCaptureService.swift */,
@@ -446,7 +443,6 @@
 				93500522000D42133CA5BB88 /* PlatformChatContainer.swift in Sources */,
 				0A811D903274D71A7F904EE0 /* PlatformSidebar.swift in Sources */,
 				E528D22E09215B1CE6C06D2C /* Preset.swift in Sources */,
-				B1D3BE5D7F388C6A028E7FD6 /* PresetManager.swift in Sources */,
 				07471739AB90D3E096ACB7CD /* RAGModels.swift in Sources */,
 				2D7EF97527CD0D2A42862F04 /* RAGService.swift in Sources */,
 				F66D26AD0B3C22E7AA58EF92 /* RTLUtilities.swift in Sources */,

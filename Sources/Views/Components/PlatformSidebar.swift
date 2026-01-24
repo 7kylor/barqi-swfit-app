@@ -34,7 +34,7 @@ struct PlatformSidebar: View {
                 .frame(width: 32, height: 32)
 
               Image(systemName: "plus")
-                .font(.system(size: 14, weight: .medium))
+                .font(TypeScale.headline)
                 .foregroundStyle(Brand.primary)
             }
 
@@ -52,9 +52,7 @@ struct PlatformSidebar: View {
           .contentShape(RoundedRectangle(cornerRadius: Radius.sm))
         }
         .buttonStyle(.plain)
-        #if os(macOS)
-          .macHoverEffect()
-        #endif
+        .adaptiveInteraction()
       }
 
       // Main Navigation Section
@@ -132,7 +130,7 @@ struct SidebarNavigationRow: View {
           .frame(width: 32, height: 32)
 
         Image(systemName: item.icon)
-          .font(.system(size: 14, weight: .medium))
+          .font(TypeScale.body)
           .foregroundStyle(isSelected ? Brand.primary : Brand.textSecondary)
       }
 
@@ -145,13 +143,11 @@ struct SidebarNavigationRow: View {
     .padding(.horizontal, Space.sm)
     .contentShape(RoundedRectangle(cornerRadius: Radius.sm))
     .onHover { hovering in
-      withAnimation(.easeInOut(duration: 0.15)) {
+      withAnimation(AnimationUtilities.quick) {
         isHovered = hovering
       }
     }
-    #if os(macOS)
-      .macHoverEffect()
-    #endif
+    .adaptiveInteraction()
   }
 }
 
@@ -207,13 +203,11 @@ struct SidebarConversationRow: View {
     }
     .buttonStyle(.plain)
     .onHover { hovering in
-      withAnimation(.easeInOut(duration: 0.15)) {
+      withAnimation(AnimationUtilities.quick) {
         isHovered = hovering
       }
     }
-    #if os(macOS)
-      .macHoverEffect()
-    #endif
+    .adaptiveInteraction()
   }
 }
 
@@ -225,7 +219,7 @@ struct SidebarMoreRow: View {
   var body: some View {
     HStack(spacing: Space.sm) {
       Image(systemName: "ellipsis")
-        .font(.system(size: 12, weight: .medium))
+        .font(TypeScale.caption)
         .foregroundStyle(Brand.textSecondary)
 
       Text(L("view_all") + " (\(count))")
